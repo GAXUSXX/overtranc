@@ -429,50 +429,60 @@ public class DecimalActivity extends Activity{
 		alertDialog.show();
 	}
 	//HOMEボタンで終了する。
-	public class HomeButtonReceive extends BroadcastReceiver{
-		@Override
-		public void onReceive(Context arg0, Intent arg1){
-			Log.v("onHomeDestroy","再起動します。");
+		public class HomeButtonReceive extends BroadcastReceiver{
+			@Override
+			public void onReceive(Context arg0, Intent arg1){
+				Log.v("onHomeDestroy","再起動します。");
+				//unregisterReceiver(m_HomeButtonReceive);
+				//m_HomeButtonReceive = null;
+				moveTaskToBack (true);
+				//finish();
+			}
+		}
+
+		public void close(View view){
 			//unregisterReceiver(m_HomeButtonReceive);
-			//m_HomeButtonReceive = null;
+			SharedPreferences mSP = PreferenceManager
+					.getDefaultSharedPreferences(getBaseContext());
+
+			Editor edit = mSP.edit();
+			edit.putInt("lastTime",20);
+
+			edit.commit();
 			moveTaskToBack (true);
-			//finish();
-
 		}
-	}
 
-	public void close(View view){
-		//unregisterReceiver(m_HomeButtonReceive);
-		moveTaskToBack (true);
-	}
+		@Override
+		public void onDestroy() {
+			super.onDestroy();
+			// レシーバーの解除
+			if(m_HomeButtonReceive != null){
+				unregisterReceiver(m_HomeButtonReceive);
+				m_HomeButtonReceive = null;
+			}
+			SharedPreferences mSP = PreferenceManager
+					.getDefaultSharedPreferences(getBaseContext());
 
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		// レシーバーの解除
-		if(m_HomeButtonReceive != null){
-			unregisterReceiver(m_HomeButtonReceive);
-			m_HomeButtonReceive = null;
+			Editor edit = mSP.edit();
+			edit.putInt("openActivity", 0);
+			edit.putInt("lastTime",20);
+
+			edit.commit();
 		}
-		SharedPreferences mSP = PreferenceManager
-				.getDefaultSharedPreferences(getBaseContext());
+		@Override
+		public void onPause(){
+			super.onPause();
+			stopService(new Intent(this, staover.class));
+			startService(new Intent(this, staover.class));
+			SharedPreferences mSP = PreferenceManager
+					.getDefaultSharedPreferences(getBaseContext());
 
-		Editor edit = mSP.edit();
-		edit.putInt("openActivity", 0);
-		edit.commit();
-	}
-	@Override
-	public void onPause(){
-		super.onPause();
-		stopService(new Intent(this, staover.class));
-		startService(new Intent(this, staover.class));
-		SharedPreferences mSP = PreferenceManager
-				.getDefaultSharedPreferences(getBaseContext());
+			Editor edit = mSP.edit();
+			edit.putInt("openActivity", 0);
+			edit.putInt("lastTime",20);
 
-		Editor edit = mSP.edit();
-		edit.putInt("openActivity", 0);
-		edit.commit();
-	}
+			edit.commit();
+		}
 
 	@Override
 	public void onResume(){
