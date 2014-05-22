@@ -1,12 +1,19 @@
 package rui.app.transcalc;
 
 import rui.app.transcalc.R;
+import rui.app.transcalc.DecimalActivity.HomeButtonReceive;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,21 +32,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class HexaActivity extends Activity{
-	
-	// ƒiƒ“ƒo[ƒfƒBƒvƒŒƒC
+
+	// ï¿½iï¿½ï¿½ï¿½oï¿½[ï¿½fï¿½Bï¿½vï¿½ï¿½ï¿½C
 	EditText numDis;
-	
+
 	// Spinner
 	Spinner spinner;
-	
-	String current;		//@æ“¾—p
-	String added;		//@“ü—Í—p
-	String deleted;		// íœ—p
-	
-	// •ÏŠ·—p
+
+	String current;		//ï¿½@ï¿½æ“¾ï¿½p
+	String added;		//ï¿½@ï¿½ï¿½Í—p
+	String deleted;		// ï¿½íœï¿½p
+
+	// ï¿½ÏŠï¿½ï¿½p
 	String Decimal;
 	String Hexa;
-	
+
 	TextView num_1;
 	TextView num_2;
 	TextView num_3;
@@ -59,31 +66,39 @@ public class HexaActivity extends Activity{
 	TextView clear;
 	TextView delete;
 	TextView trans;
-	
+
 	// AlertDialog
 	AlertDialog.Builder adb;
 	AlertDialog alertDialog;
-	
-	
-	
-	@Override 
+
+	private rui.app.transcalc.HexaActivity.HomeButtonReceive m_HomeButtonReceive;
+
+
+
+	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_hexa);
-		
+
 		getObject();
 		setSpinnerListener();
 		setTextViewListener();
-		
-		numDis.setRawInputType(InputType.TYPE_NULL); 
-				
+
+		numDis.setRawInputType(InputType.TYPE_NULL);
+
+		//HOMEã‚­ãƒ¼ãŒæŠ¼ã•ã‚ŒãŸã¨ãã®ãƒ¬ã‚·ãƒ¼ãƒè¨­å®š
+		m_HomeButtonReceive = new HomeButtonReceive();
+		IntentFilter iFilter = new IntentFilter();
+		iFilter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+		this.registerReceiver(m_HomeButtonReceive, iFilter);
+
 	}
-	
-	// ƒIƒuƒWƒFƒNƒg¶¬
+
+	// ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ï¿½ï¿½ï¿½
 	public void getObject(){
-			
-		// TextViewæ“¾
+
+		// TextViewï¿½æ“¾
 		num_1 = (TextView)findViewById(R.id.num_1);
 		num_2 = (TextView)findViewById(R.id.num_2);
 		num_3 = (TextView)findViewById(R.id.num_3);
@@ -103,59 +118,59 @@ public class HexaActivity extends Activity{
 		clear = (TextView)findViewById(R.id.clear);
 		delete = (TextView)findViewById(R.id.delete);
 		trans = (TextView)findViewById(R.id.trans);
-		
-		// EditTextæ“¾
+
+		// EditTextï¿½æ“¾
 		numDis = (EditText)findViewById(R.id.numDisplay);
-		
-		// Spinneræ“¾
+
+		// Spinnerï¿½æ“¾
 		spinner = (Spinner) findViewById(R.id.spinner);
 	}
-	
-	//@setOnItemSelectedListener
+
+	//ï¿½@setOnItemSelectedListener
 	public void setSpinnerListener(){
-		
+
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
-	       adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-	       // ƒAƒCƒeƒ€‚ğ’Ç‰Á
-	       adapter.add(getString(R.string.hexa));
-	       adapter.add(getString(R.string.decimal));
-	       // ƒAƒ_ƒvƒ^[‚ğİ’è‚µ‚Ü‚·
-	       spinner.setAdapter(adapter);
-	       // ƒXƒsƒi[‚ÌƒAƒCƒeƒ€‚ª‘I‘ğ‚³‚ê‚½‚ÉŒÄ‚Ño‚³‚ê‚éƒR[ƒ‹ƒoƒbƒNƒŠƒXƒi[‚ğ“o˜^‚µ‚Ü‚·
-	       spinner.setOnItemSelectedListener(new OnItemSelectedListener(){
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		// ï¿½Aï¿½Cï¿½eï¿½ï¿½ï¿½ï¿½Ç‰ï¿½
+		adapter.add(getString(R.string.hexa));
+		adapter.add(getString(R.string.decimal));
+		// ï¿½Aï¿½_ï¿½vï¿½^ï¿½[ï¿½ï¿½İ’è‚µï¿½Ü‚ï¿½
+		spinner.setAdapter(adapter);
+		// ï¿½Xï¿½sï¿½iï¿½[ï¿½ÌƒAï¿½Cï¿½eï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½ï¿½ï¿½ÉŒÄ‚Ñoï¿½ï¿½ï¿½ï¿½ï¿½Rï¿½[ï¿½ï¿½ï¿½oï¿½bï¿½Nï¿½ï¿½ï¿½Xï¿½iï¿½[ï¿½ï¿½oï¿½^ï¿½ï¿½ï¿½Ü‚ï¿½
+		spinner.setOnItemSelectedListener(new OnItemSelectedListener(){
 
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View v,
-				int position, long id) {
+					int position, long id) {
 				Spinner spinner = (Spinner)parent;
 				String item = (String)spinner.getSelectedItem();
-                if(item.equals(getString(R.string.decimal))){
-                	Intent intent = new Intent(Intent.ACTION_MAIN);
-            		intent.setClassName( "rui.app.transcalc","rui.app.transcalc.DecimalActivity");
-            		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            		startActivity(intent);
-                }
+				if(item.equals(getString(R.string.decimal))){
+					Intent intent = new Intent(Intent.ACTION_MAIN);
+					intent.setClassName( "rui.app.transcalc","rui.app.transcalc.DecimalActivity");
+					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					startActivity(intent);
+				}
 				Log.i("Hoge", item);
 			}
-				@Override
+			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
-        	
-        });
+
+		});
 	}
 
 	public void setTextViewListener(){
-		
+
 		OnTouchListener touchListener = new OnTouchListener(){
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				switch(event.getAction()){
-				
+
 				case MotionEvent.ACTION_DOWN:
-					
+
 					switch(v.getId()){
 					case R.id.delete:
 						delete(v);
@@ -167,7 +182,7 @@ public class HexaActivity extends Activity{
 					default:
 						add(v);
 					}
-					
+
 					v.setBackgroundResource(R.drawable.down);
 					break;
 				case MotionEvent.ACTION_UP:
@@ -177,9 +192,9 @@ public class HexaActivity extends Activity{
 				}
 				return true;
 			}
-			
+
 		};
-		
+
 		num_1.setOnTouchListener(touchListener);
 		num_2.setOnTouchListener(touchListener);
 		num_3.setOnTouchListener(touchListener);
@@ -199,21 +214,21 @@ public class HexaActivity extends Activity{
 		clear.setOnTouchListener(touchListener);
 		delete.setOnTouchListener(touchListener);
 		trans.setOnTouchListener(touchListener);
-		
-	}	
-	
-	
-	
-	// •¶š“ü—Í
+
+	}
+
+
+
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	public void add(View v){
-		
-		// “ü—Í‚³‚ê‚Ä‚¢‚é•¶š‚ğæ“¾
+
+		// ï¿½ï¿½Í‚ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½é•¶ï¿½ï¿½ï¿½ï¿½ï¿½æ“¾
 		current = numDis.getText().toString();
-		
+
 		if(current.length()==9){
 			return;
 		}
-		
+
 		switch(v.getId()){
 		case R.id.num_1:
 			current = numDis.getText().toString();
@@ -376,96 +391,149 @@ public class HexaActivity extends Activity{
 			numDis.setSelection(added.length());
 			break;
 		}
-		
-		
+
+
 	}
-	
-	// ƒNƒŠƒAƒ{ƒ^ƒ“
+
+	// ï¿½Nï¿½ï¿½ï¿½Aï¿½{ï¿½^ï¿½ï¿½
 	public void clear(View v){
 		numDis.setText("");
 	}
-	// ƒfƒŠ[ƒgƒ{ƒ^ƒ“
+	// ï¿½fï¿½ï¿½ï¿½[ï¿½gï¿½{ï¿½^ï¿½ï¿½
 	public void delete(View v){
 		current = numDis.getText().toString();
-		
-		// ”š‚ª‹ó‚Á‚Û‚¾‚Á‚½‚çI—¹I
+
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Û‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½I
 		if(current.equals("")){
 			return;
 		}
-		
+
 		deleted = current.substring(0,current.length()-1);
 		numDis.setText(deleted);
 		numDis.setSelection(deleted.length());
 	}
-	
-	// •ÏŠ·ƒ{ƒ^ƒ“
+
+	// ï¿½ÏŠï¿½ï¿½{ï¿½^ï¿½ï¿½
 	public void trans(View v){
-		// ”š‚ğæ“¾
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ“¾
 		current = numDis.getText().toString();
-		
-		// ”š‚ª‹ó‚Á‚Û‚¾‚Á‚½‚çI—¹I
+
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Û‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½I
 		if(current.equals("")){
 			return;
 		}
-		
-		// 10i”‚ğ16i”‚É•ÏŠ·‚·‚é
+
+		// 10ï¿½iï¿½ï¿½ï¿½ï¿½16ï¿½iï¿½ï¿½ï¿½É•ÏŠï¿½ï¿½ï¿½ï¿½ï¿½
 		Hexa = current;
-		Decimal = Long.toString(Long.parseLong(Hexa,16));	
-		
-		
-		
-	
-		// InflateView‚ğæ“¾
+		Decimal = Long.toString(Long.parseLong(Hexa,16));
+
+
+
+
+		// InflateViewï¿½ï¿½ï¿½æ“¾
 		LayoutInflater inflater = LayoutInflater.from(HexaActivity.this);
 		View view = inflater.inflate(R.layout.alert_transed, null);
-      
+
 		TextView notTrans = (TextView)view.findViewById(R.id.editText0);
 		notTrans.setText(Hexa);
-		
+
 		TextView transed = (TextView)view.findViewById(R.id.editText1);
 		transed.setText(Decimal);
-		
+
 		Button copy = (Button)view.findViewById(R.id.copy);
 		copy.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
 				ClipboardManager cm = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
-            	// •¶š—ñ‚ÌƒRƒs[
-            	cm.setText(Decimal);
-            	Toast.makeText(getBaseContext(), "ƒRƒs[‚µ‚Ü‚µ‚½", Toast.LENGTH_SHORT).show();
-            	alertDialog.dismiss();
+				// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÌƒRï¿½sï¿½[
+				cm.setText(Decimal);
+				Toast.makeText(getBaseContext(), "ï¿½Rï¿½sï¿½[ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½", Toast.LENGTH_SHORT).show();
+				alertDialog.dismiss();
 			}
 		});
-		
+
 		Button cancel = (Button)view.findViewById(R.id.cancel);
 		cancel.setOnClickListener(new OnClickListener(){
 
 			@Override
 			public void onClick(View v) {
-				
+
 				alertDialog.dismiss();
 			}
-			
-		});
-		
-		
-		
-		
-		
-		
-        // ƒAƒ‰[ƒgƒ_ƒCƒAƒƒO‚Ìƒ^ƒCƒgƒ‹‚ğİ’è‚µ‚Ü‚·
-		adb = new AlertDialog.Builder(this);
-        //adb.setTitle("16i”¨10i”");
-		
-        adb.setView(view);
-        // ƒAƒ‰[ƒgƒ_ƒCƒAƒƒO‚ÌƒLƒƒƒ“ƒZƒ‹‚ª‰Â”\‚©‚Ç‚¤‚©‚ğİ’è‚µ‚Ü‚·
-        adb.setCancelable(false);
-        alertDialog = adb.create();
-        // ƒAƒ‰[ƒgƒ_ƒCƒAƒƒO‚ğ•\¦‚µ‚Ü‚·
-        alertDialog.show();
-	}
-	
 
-	
+		});
+
+
+
+
+
+
+		// ï¿½Aï¿½ï¿½ï¿½[ï¿½gï¿½_ï¿½Cï¿½Aï¿½ï¿½ï¿½Oï¿½Ìƒ^ï¿½Cï¿½gï¿½ï¿½ï¿½ï¿½İ’è‚µï¿½Ü‚ï¿½
+		adb = new AlertDialog.Builder(this);
+		//adb.setTitle("16ï¿½iï¿½ï¿½ï¿½ï¿½10ï¿½iï¿½ï¿½");
+
+		adb.setView(view);
+		// ï¿½Aï¿½ï¿½ï¿½[ï¿½gï¿½_ï¿½Cï¿½Aï¿½ï¿½ï¿½Oï¿½ÌƒLï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½Â”\ï¿½ï¿½ï¿½Ç‚ï¿½ï¿½ï¿½ï¿½ï¿½İ’è‚µï¿½Ü‚ï¿½
+		adb.setCancelable(false);
+		alertDialog = adb.create();
+		// ï¿½Aï¿½ï¿½ï¿½[ï¿½gï¿½_ï¿½Cï¿½Aï¿½ï¿½ï¿½Oï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½
+		alertDialog.show();
+	}
+
+	//HOMEãƒœã‚¿ãƒ³ã§çµ‚äº†ã™ã‚‹ã€‚
+	public class HomeButtonReceive extends BroadcastReceiver{
+		@Override
+		public void onReceive(Context arg0, Intent arg1){
+			Log.v("onHomeDestroy","å†èµ·å‹•ã—ã¾ã™ã€‚");
+			//unregisterReceiver(m_HomeButtonReceive);
+			//m_HomeButtonReceive = null;
+			moveTaskToBack (true);
+			//finish();
+		}
+	}
+
+	public void close(View view){
+		//unregisterReceiver(m_HomeButtonReceive);
+		SharedPreferences mSP = PreferenceManager
+				.getDefaultSharedPreferences(getBaseContext());
+
+		Editor edit = mSP.edit();
+		edit.putInt("lastTime",20);
+
+		edit.commit();
+		moveTaskToBack (true);
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		// ãƒ¬ã‚·ãƒ¼ãƒãƒ¼ã®è§£é™¤
+		if(m_HomeButtonReceive != null){
+			unregisterReceiver(m_HomeButtonReceive);
+			m_HomeButtonReceive = null;
+		}
+		SharedPreferences mSP = PreferenceManager
+				.getDefaultSharedPreferences(getBaseContext());
+
+		Editor edit = mSP.edit();
+		edit.putInt("openActivity", 0);
+		edit.putInt("lastTime",20);
+
+		edit.commit();
+	}
+	@Override
+	public void onPause(){
+		super.onPause();
+		stopService(new Intent(this, staover.class));
+		startService(new Intent(this, staover.class));
+		SharedPreferences mSP = PreferenceManager
+				.getDefaultSharedPreferences(getBaseContext());
+
+		Editor edit = mSP.edit();
+		edit.putInt("openActivity", 0);
+		edit.putInt("lastTime",20);
+
+		edit.commit();
+	}
 
 }
