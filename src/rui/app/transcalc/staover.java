@@ -195,6 +195,8 @@ public class staover extends Service {
 							edit.putInt("x",currentX-disp.getWidth()/10);
 							edit.putInt("y",currentY-disp.getWidth()/10);
 							edit.putInt("openActivity", 1);
+							//最後に触った時間を記録
+							edit.putInt("lastTime",40);
 							edit.commit();
 
 							params.gravity = Gravity.TOP | Gravity.LEFT;
@@ -314,6 +316,15 @@ public class staover extends Service {
 			lastTime++;
 		}
 
+		if(lastTime >= 40){
+			Log.v("blank","ok");
+			chatHead.setImageResource(R.drawable.blank);
+			if(am2 != null){
+				am2.cancel(pi);
+			}
+			lastTime = 0;
+		}
+
 		if(lastTime >= 20){
 			chatHead.setImageResource(R.drawable.ic_launcher2);
 			if(am2 != null){
@@ -376,6 +387,9 @@ public class staover extends Service {
 			am2.setRepeating(am2.RTC, currentTimeMillis + 5000, interval, pi);
 		}
 		else if(lastTime == 18){
+
+		}
+		else if(lastTime == 40){
 
 		}
 		else{
