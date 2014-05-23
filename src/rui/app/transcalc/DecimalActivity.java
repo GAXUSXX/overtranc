@@ -183,6 +183,7 @@ public class DecimalActivity extends Activity{
 	            		setSpinnerListener();
 	            		setTextViewListener();
 	            		numDis.setRawInputType(InputType.TYPE_NULL);
+	            		
 	                }
 					Log.i("Hoge", item);
 				}
