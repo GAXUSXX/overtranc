@@ -447,7 +447,7 @@ public class HexaActivity extends Activity{
 				ClipboardManager cm = (ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
 				// ������̃R�s�[
 				cm.setText(Decimal);
-				Toast.makeText(getBaseContext(), "�R�s�[���܂���", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getBaseContext(), "コピーしました。", Toast.LENGTH_SHORT).show();
 				alertDialog.dismiss();
 			}
 		});

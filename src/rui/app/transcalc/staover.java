@@ -115,7 +115,7 @@ public class staover extends Service {
 					int y0 = mSP.getInt("y", 0);
 					notTouchFlag = 0;
 					if(lastTime > 2){
-						if(lastTouchX < x0+disp.getWidth()/19 && x0 < disp.getWidth()/3 || lastTouchX > disp.getWidth()/1.2+disp.getWidth()/10 && lastTouchX > disp.getWidth()/2) {
+						if(lastTouchX < x0+disp.getWidth()/15 && x0 < disp.getWidth()/3 || lastTouchX > disp.getWidth()/1.2+disp.getWidth()/10 && lastTouchX > disp.getWidth()/2) {
 							//触ったら復元
 							chatHead.setImageResource(R.drawable.ic_launcher2);
 						}
@@ -381,10 +381,10 @@ public class staover extends Service {
 			am2.setRepeating(am2.RTC, currentTimeMillis + 3000, interval, pi);
 		}
 		else if(lastTime == 18){
-
+			startService(new Intent(this, staover.class));
 		}
 		else if(lastTime == 40){
-
+			startService(new Intent(this, staover.class));
 		}
 		else{
 			lastTime = 1;
