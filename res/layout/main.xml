@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/view"
+    android:layout_width="80dp"
+    android:layout_height="80dp"
+    android:background="#00000000" >
+
+    <Button
+        android:id="@+id/bt2"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="0px"
+        android:alpha="20"
+        android:background="@drawable/overicon" />
+
+</FrameLayout>
