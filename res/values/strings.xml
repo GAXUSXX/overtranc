@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">TransCalc</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="hexa">16進数</string>
+    <string name="decimal">10進数</string>
+	<string name="prompt">変換前</string>
+	<string name="transed">変換後</string>
+	<string name="convert">変換</string>
+	<string name="copy">コピー</string>
+	<string name="ok">OK</string>
+
+</resources>
