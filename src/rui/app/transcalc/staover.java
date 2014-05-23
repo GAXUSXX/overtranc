@@ -114,7 +114,7 @@ public class staover extends Service {
 					int x0 = mSP.getInt("x", 0);
 					int y0 = mSP.getInt("y", 0);
 					notTouchFlag = 0;
-					if(lastTime > 2){
+					if(lastTime > 2 && lastTime != 20){
 						if(lastTouchX < x0+disp.getWidth()/15 && x0 < disp.getWidth()/3 || lastTouchX > disp.getWidth()/1.2+disp.getWidth()/10 && lastTouchX > disp.getWidth()/2) {
 							//触ったら復元
 							chatHead.setImageResource(R.drawable.ic_launcher2);
@@ -128,7 +128,7 @@ public class staover extends Service {
 				case MotionEvent.ACTION_UP:
 					if(notTouchFlag == 0){
 						mSP = PreferenceManager
-						.getDefaultSharedPreferences(getBaseContext());
+								.getDefaultSharedPreferences(getBaseContext());
 						Editor edit = mSP.edit();
 						//最後に触った時間を記録
 						edit.putInt("lastTime",1);
