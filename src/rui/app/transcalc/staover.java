@@ -114,13 +114,14 @@ public class staover extends Service {
 					int x0 = mSP.getInt("x", 0);
 					int y0 = mSP.getInt("y", 0);
 					notTouchFlag = 0;
-					if(lastTime > 1){
-						if(lastTouchX < x0+disp.getWidth()/11 || lastTouchX > x0+disp.getWidth()/8) {
+					if(lastTime > 2){
+						if(lastTouchX < x0+disp.getWidth()/19 && x0 < disp.getWidth()/3 || lastTouchX > disp.getWidth()/1.2+disp.getWidth()/10 && lastTouchX > disp.getWidth()/2) {
 							//触ったら復元
 							chatHead.setImageResource(R.drawable.ic_launcher2);
 						}
 						else{
 							notTouchFlag = 1;
+							return false;
 						}
 					}
 					break;
@@ -186,7 +187,7 @@ public class staover extends Service {
 							/* FLAG_ACTIVITY_NEW_TASK付きでActivityを呼び出す例 */
 							Intent intent = new Intent();
 							intent.setClassName("rui.app.transcalc", "rui.app.transcalc.DecimalActivity");
-							intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT| Intent.FLAG_ACTIVITY_NEW_TASK);
+							intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT| Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY);
 							getApplicationContext().startActivity(intent);
 
 							currentX = (int) event.getRawX();
@@ -218,7 +219,8 @@ public class staover extends Service {
 								params.x= 0;
 							}
 
-							edit.putInt("x",currentX-disp.getWidth()/10);
+							int x = params.x;
+							edit.putInt("x",x);
 							edit.putInt("y",(int) (currentY-disp.getWidth()/7.89));
 							edit.commit();
 
@@ -327,16 +329,10 @@ public class staover extends Service {
 
 		if(lastTime >= 20){
 			chatHead.setImageResource(R.drawable.ic_launcher2);
-			if(am2 != null){
-				am2.cancel(pi);
-			}
 			lastTime = 0;
 		}
 		if(lastTime == 19){
 			chatHead.setImageResource(R.drawable.ic_launcher2);
-			if(am2 != null){
-				//am2.cancel(pi);
-			}
 			lastTime = 0;
 		}
 
@@ -361,8 +357,6 @@ public class staover extends Service {
 		Log.v("service","Destroy");
 		if (chatHead != null) wm.removeView(chatHead);
 
-		startService(new Intent(this, staover.class));
-
 		SharedPreferences mSP = PreferenceManager
 				.getDefaultSharedPreferences(getBaseContext());
 
@@ -384,7 +378,7 @@ public class staover extends Service {
 			long interval = 2 * 1000; // 1秒ごと
 
 			//初回は現在の1秒後に実行　それ以降1秒ごとに実行
-			am2.setRepeating(am2.RTC, currentTimeMillis + 5000, interval, pi);
+			am2.setRepeating(am2.RTC, currentTimeMillis + 3000, interval, pi);
 		}
 		else if(lastTime == 18){
 
@@ -394,6 +388,7 @@ public class staover extends Service {
 		}
 		else{
 			lastTime = 1;
+			startService(new Intent(this, staover.class));
 		}
 		Editor edit = mSP.edit();
 		//最後に触った時間を記録

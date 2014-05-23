@@ -469,6 +469,7 @@ public class DecimalActivity extends Activity{
 
 			edit.commit();
 		}
+
 		@Override
 		public void onPause(){
 			super.onPause();
