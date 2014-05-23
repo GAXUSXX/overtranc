@@ -182,8 +182,9 @@ public class DecimalActivity extends Activity{
 	                	getObject();
 	            		setSpinnerListener();
 	            		setTextViewListener();
-	            		numDis.setRawInputType(InputType.TYPE_NULL);
 	            		
+	            		// EditTextを無効化
+	            		numDis.setRawInputType(InputType.TYPE_NULL);
 	                }
 					Log.i("Hoge", item);
 				}
@@ -217,6 +218,8 @@ public class DecimalActivity extends Activity{
 	                	getObject();
 	            		setSpinnerListener();
 	            		setTextViewListener();
+	            		
+	            		// EditTextを無効化
 	            		numDis.setRawInputType(InputType.TYPE_NULL);
 	                }
 					Log.i("Hoge", item);
