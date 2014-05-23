@@ -1,9 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?><RelativeLayout
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="rui.app.transcalc.DecimalActivity"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:onClick="close" xmlns:android="http://schemas.android.com/apk/res/android">
+    android:onClick="close" 
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
 	<LinearLayout
 	    android:id="@+id/container"
